@@ -1,5 +1,7 @@
 # effect-lambda
 
+![NPM Version](https://img.shields.io/npm/v/effect-lambda)
+
 Effect runtime for AWS Lambdas
 
 Effect friendly wrapper for AWS Lambdas
