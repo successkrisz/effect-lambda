@@ -1,4 +1,11 @@
 
+## [0.0.1](https://github.com/successkrisz/effect-lambda/compare/v0.0.0...v0.0.1) (2024-09-26)
+
+
+### Bug Fixes
+
+* npm release ([9d6e59d](https://github.com/successkrisz/effect-lambda/commit/9d6e59d9f9d7216d74d276e743b936a1407b5a80))
+
 ## 0.0.0 (2024-09-26)
 
 
