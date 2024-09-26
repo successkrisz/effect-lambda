@@ -13,6 +13,7 @@ const project = new typescript.TypeScriptProject({
 
     releaseTrigger: ReleaseTrigger.manual(),
     github: false,
+    releaseToNpm: true,
 
     deps: ['@effect/schema', '@types/aws-lambda'],
     peerDeps: ['effect', '@effect/schema'],
