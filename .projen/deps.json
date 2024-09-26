@@ -6,7 +6,6 @@
     },
     {
       "name": "@types/node",
-      "version": "^18",
       "type": "build"
     },
     {
@@ -17,6 +16,11 @@
     {
       "name": "@typescript-eslint/parser",
       "version": "^7",
+      "type": "build"
+    },
+    {
+      "name": "commit-and-tag-version",
+      "version": "^12",
       "type": "build"
     },
     {
@@ -63,11 +67,6 @@
       "type": "build"
     },
     {
-      "name": "standard-version",
-      "version": "^9",
-      "type": "build"
-    },
-    {
       "name": "ts-jest",
       "type": "build"
     },
@@ -81,18 +80,18 @@
     },
     {
       "name": "@effect/schema",
+      "type": "peer"
+    },
+    {
+      "name": "effect",
+      "type": "peer"
+    },
+    {
+      "name": "@effect/schema",
       "type": "runtime"
     },
     {
       "name": "@types/aws-lambda",
-      "type": "runtime"
-    },
-    {
-      "name": "aws-lambda",
-      "type": "runtime"
-    },
-    {
-      "name": "effect",
       "type": "runtime"
     }
   ],

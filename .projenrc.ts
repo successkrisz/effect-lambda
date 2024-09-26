@@ -14,14 +14,9 @@ const project = new typescript.TypeScriptProject({
     releaseTrigger: ReleaseTrigger.manual(),
     github: false,
 
-    deps: [
-        'aws-lambda',
-        'effect',
-        '@effect/schema',
-        '@types/aws-lambda',
-    ] /* Runtime dependencies of this module. */,
-    // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
-    // devDeps: [],             /* Build dependencies for this module. */
+    deps: ['@effect/schema', '@types/aws-lambda'],
+    peerDeps: ['effect', '@effect/schema'],
+
     // packageName: undefined,  /* The "name" in package.json. */
 })
 
