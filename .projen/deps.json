@@ -51,6 +51,10 @@
       "type": "build"
     },
     {
+      "name": "helmet",
+      "type": "build"
+    },
+    {
       "name": "jest",
       "type": "build"
     },

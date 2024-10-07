@@ -19,6 +19,7 @@ const project = new typescript.TypeScriptProject({
 
     deps: ['@types/aws-lambda'],
     peerDeps: ['effect', '@effect/schema'],
+    devDeps: ['helmet'],
 
     // packageName: undefined,  /* The "name" in package.json. */
 })

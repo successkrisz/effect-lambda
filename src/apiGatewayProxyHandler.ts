@@ -6,7 +6,7 @@ import {
     APIGatewayProxyHandler,
     APIGatewayProxyResult,
 } from 'aws-lambda'
-import { Console, Context, Effect, Layer, pipe } from 'effect'
+import { Console, Context, Effect, identity, Layer, pipe } from 'effect'
 import { HandlerContext } from './handler'
 import { headerNormalizer } from './headerNormalizer'
 import { jsonBodyParser } from './jsonBodyParser'
@@ -71,9 +71,13 @@ export const APIGProxyHandler =
             never,
             never | APIGProxyEvent | HandlerContext
         >,
+        responseMapper: (
+            res: APIGatewayProxyResult,
+        ) => APIGatewayProxyResult = identity,
     ): APIGatewayProxyHandler =>
     async (event, context) =>
         effect.pipe(
+            Effect.map(responseMapper),
             Effect.provide(
                 Layer.effect(
                     APIGProxyEvent,

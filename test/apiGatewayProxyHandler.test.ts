@@ -1,3 +1,4 @@
+import { ServerResponse } from 'node:http'
 import { Schema } from '@effect/schema'
 import { APIGatewayProxyEvent } from 'aws-lambda'
 import { Context, Effect } from 'effect'
@@ -7,6 +8,7 @@ import {
     schemaBodyJson,
     schemaPathParams,
 } from '../src/apiGatewayProxyHandler'
+import { applyMiddleware } from '../src/applyMiddleware'
 
 describe('APIGProxyHandler', () => {
     const createEvent = (
@@ -194,5 +196,27 @@ describe('APIGProxyHandler', () => {
 
         expect(result?.statusCode).toBe(200)
         expect(result?.body).toBe('Hello John, goodbye!')
+    })
+
+    it('should work with the helmet middleware applied', async () => {
+        const middleware = jest
+            .fn()
+            .mockImplementation((_, res: ServerResponse) => {
+                res.setHeader('X-XSS-Protection', '0')
+            })
+        const handler = APIGProxyHandler(
+            Effect.succeed({ statusCode: 200, body: 'Woohoo' }),
+            applyMiddleware(middleware),
+        )
+
+        const event = createEvent(null, false, {})
+        const result = await handler(event, {} as any, () => {})
+
+        expect(result).toEqual({
+            statusCode: 200,
+            body: 'Woohoo',
+            headers: { 'X-XSS-Protection': '0' },
+        })
+        expect
     })
 })
