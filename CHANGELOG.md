@@ -1,4 +1,11 @@
 
+## [0.0.3](https://github.com/successkrisz/effect-lambda/compare/v0.0.2...v0.0.3) (2024-10-07)
+
+
+### Features
+
+* add applyMiddleware util and helmet support ([ba6132e](https://github.com/successkrisz/effect-lambda/commit/ba6132e28fbe8014909f3603de2d6c679a8b1ace))
+
 ## [0.0.2](https://github.com/successkrisz/effect-lambda/compare/v0.0.1...v0.0.2) (2024-10-07)
 
 
