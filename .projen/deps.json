@@ -6,6 +6,7 @@
     },
     {
       "name": "@types/node",
+      "version": "^20",
       "type": "build"
     },
     {
@@ -85,10 +86,6 @@
     {
       "name": "effect",
       "type": "peer"
-    },
-    {
-      "name": "@effect/schema",
-      "type": "runtime"
     },
     {
       "name": "@types/aws-lambda",

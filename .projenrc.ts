@@ -8,6 +8,7 @@ const project = new typescript.TypeScriptProject({
     repository: 'git@github.com:successkrisz/effect-lambda.git',
     projenrcTs: true,
     packageManager: NodePackageManager.PNPM,
+    minNodeVersion: '20.17.0',
     prettier: true,
     eslint: true,
 
@@ -16,7 +17,7 @@ const project = new typescript.TypeScriptProject({
     releaseToNpm: true,
     packageName: 'effect-lambda',
 
-    deps: ['@effect/schema', '@types/aws-lambda'],
+    deps: ['@types/aws-lambda'],
     peerDeps: ['effect', '@effect/schema'],
 
     // packageName: undefined,  /* The "name" in package.json. */
