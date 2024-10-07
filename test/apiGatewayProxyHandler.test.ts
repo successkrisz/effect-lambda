@@ -1,6 +1,12 @@
+import { Schema } from '@effect/schema'
 import { APIGatewayProxyEvent } from 'aws-lambda'
 import { Context, Effect } from 'effect'
-import { APIGProxyEvent, APIGProxyHandler } from '../src/apiGatewayProxyHandler'
+import {
+    APIGProxyEvent,
+    APIGProxyHandler,
+    schemaBodyJson,
+    schemaPathParams,
+} from '../src/apiGatewayProxyHandler'
 
 describe('APIGProxyHandler', () => {
     const createEvent = (
@@ -143,5 +149,50 @@ describe('APIGProxyHandler', () => {
 
         expect(result?.statusCode).toBe(400)
         expect(result?.body).toBe('Invalid JSON')
+    })
+
+    // ====================
+    // Readme examples
+    // ====================
+    it('should access input event as in the readme example', async () => {
+        const PayloadSchema = Schema.Struct({
+            message: Schema.String,
+        })
+        const PathParamsSchema = Schema.Struct({
+            name: Schema.String,
+        })
+        const handler = APIGProxyHandler(
+            schemaPathParams(PathParamsSchema).pipe(
+                Effect.map(({ name }) => name),
+                Effect.bindTo('name'),
+                Effect.bind('message', () =>
+                    schemaBodyJson(PayloadSchema).pipe(
+                        Effect.map((x) => x.message),
+                    ),
+                ),
+                Effect.map(({ name, message }) => ({
+                    statusCode: 200,
+                    body: `Hello ${name}, ${message}`,
+                })),
+                Effect.catchTag('ParseError', () =>
+                    Effect.succeed({
+                        statusCode: 400,
+                        body: 'Invalid JSON',
+                    }),
+                ),
+            ),
+        )
+
+        const event = {
+            ...createEvent(JSON.stringify({ message: 'goodbye!' }), false, {
+                'Content-Type': 'application/json',
+            }),
+            pathParameters: { name: 'John' },
+        }
+
+        const result = await handler(event, {} as any, () => {})
+
+        expect(result?.statusCode).toBe(200)
+        expect(result?.body).toBe('Hello John, goodbye!')
     })
 })
