@@ -33,6 +33,16 @@ export const APIGProxyHandler =
     ): APIGatewayProxyHandler =>
     async (event, context) =>
         effect.pipe(
+            Effect.provide(
+                Layer.effect(
+                    APIGProxyEvent,
+                    pipe(event, headerNormalizer, jsonBodyParser),
+                ),
+            ),
+            Effect.catchTag('ParseError', () =>
+                Effect.succeed({ statusCode: 400, body: 'Invalid JSON' }),
+            ),
+            Effect.provide(Layer.succeed(HandlerContext, context)),
             Effect.tapDefect(Console.error),
             Effect.catchAllDefect(() =>
                 Effect.succeed({
@@ -40,12 +50,5 @@ export const APIGProxyHandler =
                     body: 'Internal Server Error',
                 }),
             ),
-            Effect.provide(
-                Layer.effect(
-                    APIGProxyEvent,
-                    pipe(event, headerNormalizer, jsonBodyParser),
-                ),
-            ),
-            Effect.provide(Layer.succeed(HandlerContext, context)),
             Effect.runPromise,
         )
