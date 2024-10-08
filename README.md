@@ -16,6 +16,7 @@ pnpm add effect-lambda effect @effect/schema
 // handler.ts
 import { APIGProxyHandler } from 'effect-lambda'
 import { Effect } from 'effect'
+import { Schema } from '@effect/schema'
 
 export const handler = APIGProxyHandler(
     Effect.succeed({
