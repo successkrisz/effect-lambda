@@ -1,14 +1,15 @@
 import { ServerResponse } from 'node:http'
 import { Schema } from '@effect/schema'
 import { APIGatewayProxyEvent } from 'aws-lambda'
-import { Context, Effect } from 'effect'
+import { Context, Effect, pipe } from 'effect'
 import {
     APIGProxyEvent,
     APIGProxyHandler,
+    HandlerEffect,
     schemaBodyJson,
     schemaPathParams,
 } from '../src/apiGatewayProxyHandler'
-import { applyMiddleware } from '../src/applyMiddleware'
+import { applyMiddleware, Middleware } from '../src/applyMiddleware'
 
 describe('APIGProxyHandler', () => {
     const createEvent = (
@@ -203,10 +204,16 @@ describe('APIGProxyHandler', () => {
             .fn()
             .mockImplementation((_, res: ServerResponse) => {
                 res.setHeader('X-XSS-Protection', '0')
-            })
-        const handler = APIGProxyHandler(
-            Effect.succeed({ statusCode: 200, body: 'Woohoo' }),
-            applyMiddleware(middleware),
+            }) as Middleware
+
+        const handlerEffect: HandlerEffect = Effect.succeed({
+            statusCode: 200,
+            body: 'Woohoo',
+        })
+        const handler = pipe(
+            handlerEffect,
+            Effect.map(applyMiddleware(middleware)),
+            APIGProxyHandler,
         )
 
         const event = createEvent(null, false, {})

@@ -6,7 +6,7 @@ import {
     APIGatewayProxyHandler,
     APIGatewayProxyResult,
 } from 'aws-lambda'
-import { Console, Context, Effect, identity, Layer, pipe } from 'effect'
+import { Console, Context, Effect, Layer, pipe } from 'effect'
 import { HandlerContext } from './handler'
 import { headerNormalizer } from './headerNormalizer'
 import { jsonBodyParser } from './jsonBodyParser'
@@ -64,20 +64,16 @@ export const PathParameters = APIGProxyEvent.pipe(
     Effect.map((x) => x.pathParameters || {}),
 )
 
+export type HandlerEffect = Effect.Effect<
+    APIGatewayProxyResult,
+    never,
+    never | APIGProxyEvent | HandlerContext
+>
+
 export const APIGProxyHandler =
-    (
-        effect: Effect.Effect<
-            APIGatewayProxyResult,
-            never,
-            never | APIGProxyEvent | HandlerContext
-        >,
-        responseMapper: (
-            res: APIGatewayProxyResult,
-        ) => APIGatewayProxyResult = identity,
-    ): APIGatewayProxyHandler =>
+    (effect: HandlerEffect): APIGatewayProxyHandler =>
     async (event, context) =>
         effect.pipe(
-            Effect.map(responseMapper),
             Effect.provide(
                 Layer.effect(
                     APIGProxyEvent,
