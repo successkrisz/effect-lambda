@@ -88,11 +88,33 @@ export const handler = SQSEventHandler(
 );
 ```
 
+### DynamoDB Stream Event Handler
+
+```typescript
+// handler.ts
+import { DynamoDBStreamEventHandler } from "effect-lambda";
+import { Effect } from "effect";
+
+export const handler = DynamoDBStreamEventHandler(
+  Effect.map((event) => {
+    event.Records.forEach((record) => {
+      // Process each record
+      console.log("DynamoDB Record: %j", record);
+    });
+  }),
+);
+```
+
+This handler allows you to process DynamoDB stream events in a functional way using the `effect-lambda` library. You can access each record in the stream and apply your business logic accordingly.
+
+## TODO list
+
 Effect friendly wrapper for AWS Lambdas
 
-- [x]: `APIGatewayProxyHandler` - REST api or HTTP api with payload version 1
-- [ ]: `APIGatewayProxyHandlerV2` - HTTP api with payload version 2
-- [ ]: `Authorizer Trigger`
-- [ ]: `SNS Trigger`
-- [x]: `SQS Trigger`
-- [ ]: `DynamoDB Trigger`
+- [x] `APIGatewayProxyHandler` - REST api or HTTP api with payload version 1
+- [x] `SQS Trigger`
+- [x] `DynamoDB Trigger`
+- [ ] Utility to deal with an array of records and produce a batchItemFailures response upon failures
+- [ ] `Authorizer Trigger`
+- [ ] `SNS Trigger`
+- [ ] `APIGatewayProxyHandlerV2` - HTTP api with payload version 2

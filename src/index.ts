@@ -1,4 +1,5 @@
 export * from './apiGatewayProxyHandler'
 export * from './applyMiddleware'
+export * from './ddbHandler'
 export * from './sqsHandler'
 export * from './utils'
