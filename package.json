@@ -10,6 +10,7 @@
     "clobber": "npx projen clobber",
     "compile": "npx projen compile",
     "default": "npx projen default",
+    "docgen": "npx projen docgen",
     "eject": "npx projen eject",
     "eslint": "npx projen eslint",
     "package": "npx projen package",
@@ -46,6 +47,7 @@
     "projen": "^0.88.1",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
+    "typedoc": "^0.26.8",
     "typescript": "^5.6.2"
   },
   "peerDependencies": {

@@ -1,6 +1,7 @@
 import { typescript } from 'projen'
 import { NodePackageManager, TrailingComma } from 'projen/lib/javascript'
 import { ReleaseTrigger } from 'projen/lib/release'
+import { TypedocDocgen } from 'projen/lib/typescript'
 
 const project = new typescript.TypeScriptProject({
     defaultReleaseBranch: 'master',
@@ -11,6 +12,7 @@ const project = new typescript.TypeScriptProject({
     minNodeVersion: '20.17.0',
     prettier: true,
     eslint: true,
+    vscode: true,
 
     releaseTrigger: ReleaseTrigger.manual(),
     github: false,
@@ -20,13 +22,37 @@ const project = new typescript.TypeScriptProject({
     deps: ['@types/aws-lambda'],
     peerDeps: ['effect', '@effect/schema'],
     devDeps: ['helmet'],
-
-    // packageName: undefined,  /* The "name" in package.json. */
 })
+
+new TypedocDocgen(project)
+
+project.vscode?.settings.addSettings({
+    'editor.defaultFormatter': 'esbenp.prettier-vscode',
+    'editor.formatOnSave': true,
+    'editor.codeActionsOnSave': {
+        'source.fixAll': 'always',
+        'source.organizeImports': 'never',
+    },
+})
+
+project.vscode?.extensions.addRecommendations(
+    'dbaeumer.vscode-eslint',
+    'esbenp.prettier-vscode',
+)
 
 project.eslint?.addRules({
     semi: ['error', 'never'],
     quotes: ['error', 'single'],
+    'import/order': [
+        'warn',
+        {
+            groups: ['builtin', 'external'],
+            alphabetize: {
+                order: 'asc',
+                caseInsensitive: true,
+            },
+        },
+    ],
 })
 
 project.prettier?.addOverride({
