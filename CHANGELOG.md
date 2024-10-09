@@ -1,4 +1,12 @@
 
+## [0.0.4](https://github.com/successkrisz/effect-lambda/compare/v0.0.3...v0.0.4) (2024-10-09)
+
+
+### Features
+
+* add dynamodb stream event handler ([6b41747](https://github.com/successkrisz/effect-lambda/commit/6b417470928b8a7ad7dc82696c4035a61e48cc56))
+* **apigatewayproxyhandler:** remove responseMapper param ([6a0736f](https://github.com/successkrisz/effect-lambda/commit/6a0736f9dc4531eb7bb27865542e08a8e0b8c466))
+
 ## [0.0.3](https://github.com/successkrisz/effect-lambda/compare/v0.0.2...v0.0.3) (2024-10-07)
 
 
