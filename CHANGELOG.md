@@ -1,4 +1,11 @@
 
+## [0.0.5](https://github.com/successkrisz/effect-lambda/compare/v0.0.4...v0.0.5) (2024-10-10)
+
+
+### Features
+
+* **sqs:** add recordProcessorAdapter ([0f74bd6](https://github.com/successkrisz/effect-lambda/commit/0f74bd6e52f643af5dcc730242e8421728974916))
+
 ## [0.0.4](https://github.com/successkrisz/effect-lambda/compare/v0.0.3...v0.0.4) (2024-10-09)
 
 
