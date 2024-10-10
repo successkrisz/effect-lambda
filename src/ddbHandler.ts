@@ -1,14 +1,19 @@
 import {
     DynamoDBStreamEvent as _DynamoDBStreamEvent,
+    DynamoDBRecord as _DynamoDBRecord,
     DynamoDBStreamHandler,
 } from 'aws-lambda'
 import { Console, Context, Effect, Layer } from 'effect'
-import { HandlerContext } from './handler'
+import { BatchResponse, HandlerContext } from './common'
 
 // Define a context tag for DynamoDBStreamEvent
 export class DynamoDBStreamEvent extends Context.Tag(
     '@effect-lambda/DynamoDBStreamEvent',
 )<DynamoDBStreamEvent, _DynamoDBStreamEvent>() {}
+
+export class DynamoDBRecord extends Context.Tag(
+    '@effect-lambda/DynamoDBRecord',
+)<DynamoDBStreamEvent, _DynamoDBRecord>() {}
 
 // Utility to extract the new images from the DynamoDB stream event
 export const DynamoDBNewImages = DynamoDBStreamEvent.pipe(
@@ -21,9 +26,9 @@ export const DynamoDBNewImages = DynamoDBStreamEvent.pipe(
 export const DynamoDBStreamEventHandler =
     (
         effect: Effect.Effect<
-            void,
+            void | BatchResponse,
             never,
-            never | DynamoDBStreamEvent | HandlerContext
+            DynamoDBStreamEvent | HandlerContext
         >,
     ): DynamoDBStreamHandler =>
     async (event, context) =>

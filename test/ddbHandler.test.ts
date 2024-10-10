@@ -4,12 +4,12 @@ import {
 } from 'aws-lambda'
 import { Effect } from 'effect'
 import event from './sampleEvents/ddbEvent.json'
+import { HandlerContext } from '../src/common'
 import {
     DynamoDBStreamEvent,
     DynamoDBStreamEventHandler,
     DynamoDBNewImages,
 } from '../src/ddbHandler'
-import { HandlerContext } from '../src/handler'
 
 describe('ddbHandler', () => {
     it('should return void on a successful effect', async () => {

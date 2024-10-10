@@ -7,7 +7,7 @@ import {
     APIGatewayProxyResult,
 } from 'aws-lambda'
 import { Console, Context, Effect, Layer, pipe } from 'effect'
-import { HandlerContext } from './handler'
+import { HandlerContext } from './common'
 import { headerNormalizer } from './headerNormalizer'
 import { jsonBodyParser } from './jsonBodyParser'
 
@@ -67,7 +67,7 @@ export const PathParameters = APIGProxyEvent.pipe(
 export type HandlerEffect = Effect.Effect<
     APIGatewayProxyResult,
     never,
-    never | APIGProxyEvent | HandlerContext
+    APIGProxyEvent | HandlerContext
 >
 
 export const APIGProxyHandler =

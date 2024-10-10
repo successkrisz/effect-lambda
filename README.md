@@ -114,7 +114,7 @@ Effect friendly wrapper for AWS Lambdas
 - [x] `APIGatewayProxyHandler` - REST api or HTTP api with payload version 1
 - [x] `SQS Trigger`
 - [x] `DynamoDB Trigger`
-- [ ] Utility to deal with an array of records and produce a batchItemFailures response upon failures
+- [x] Utility to deal with an array of records and produce a batchItemFailures response upon failures
 - [ ] `Authorizer Trigger`
 - [ ] `SNS Trigger`
 - [ ] `APIGatewayProxyHandlerV2` - HTTP api with payload version 2
