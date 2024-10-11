@@ -111,10 +111,17 @@ This handler allows you to process DynamoDB stream events in a functional way us
 
 Effect friendly wrapper for AWS Lambdas
 
-- [x] `APIGatewayProxyHandler` - REST api or HTTP api with payload version 1
-- [x] `SQS Trigger`
-- [x] `DynamoDB Trigger`
+- [x] APIGatewayProxyHandler - REST api or HTTP api with payload version 1
+- [x] SQS Trigger
+- [x] DynamoDB Trigger
 - [x] Utility to deal with an array of records and produce a batchItemFailures response upon failures
-- [ ] `Authorizer Trigger`
-- [ ] `SNS Trigger`
-- [ ] `APIGatewayProxyHandlerV2` - HTTP api with payload version 2
+- [x] Authorizer Trigger
+- [ ] SNS Trigger
+- [ ] Change API naming to use namespaces
+- [ ] Add documentation
+- [ ] Set up GitHub actions
+- [ ] APIGatewayProxyHandlerV2 - HTTP api with payload version 2
+- [ ] S3 Put Event Handler
+- [ ] S3 Delete Event Handler
+- [ ] SES Trigger
+- [ ] EventBridge Trigger
