@@ -1,4 +1,13 @@
 
+## [0.0.6](https://github.com/successkrisz/effect-lambda/compare/v0.0.5...v0.0.6) (2024-10-12)
+
+
+### Features
+
+* add requestAuthorizer lambda ([7a177f7](https://github.com/successkrisz/effect-lambda/commit/7a177f7477aad3d73208182f5504f8aa5a957961))
+* add snsHandler ([9667b59](https://github.com/successkrisz/effect-lambda/commit/9667b591a9cb2c9e153210c030a5f77e9af5129a))
+* change export namespaces ([d9e5604](https://github.com/successkrisz/effect-lambda/commit/d9e560475eda2563c954c2b053301935b7045778))
+
 ## [0.0.5](https://github.com/successkrisz/effect-lambda/compare/v0.0.4...v0.0.5) (2024-10-10)
 
 
