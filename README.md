@@ -4,6 +4,26 @@
 
 Effect friendly wrapper for AWS Lambda functions.
 
+> **Disclaimer:** This library is still in early development stage and the API is likely to change. Feedback is welcome.
+
+## Motivation
+
+Have been using lambda functions as a primary way to build serverless applications for a while now. Since I made the switch from `fp-ts` to `effect`, I wanted to use effects all the way when writing lambda functions, replacing the previous usage of `middy` and `fp-ts`. This library is an attempt to provide a functional way to write lambda functions using the `effect` library. The library is inspired by the `@effect/platform` library and aims to provide a similar experience for writing lambda functions.
+
+## Table of Contents
+
+- [effect-lambda](#effect-lambda)
+  - [Motivation](#motivation)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [API Gateway Proxy Handler](#api-gateway-proxy-handler)
+    - [SQS Trigger Handler](#sqs-trigger-handler)
+    - [SNS Trigger Handler](#sns-trigger-handler)
+    - [DynamoDB Stream Event Handler](#dynamodb-stream-event-handler)
+  - [Useful other libraries to use with effect-lambda](#useful-other-libraries-to-use-with-effect-lambda)
+  - [TODO list](#todo-list)
+
 ## Installation
 
 This library has peer dependencies on `@effect/schema` and `effect`. You can install them via npm or pnpm or any other package manager you prefer.
@@ -16,6 +36,15 @@ npm install effect-lambda effect @effect/schema
 ```
 
 ## Usage
+
+Currently the library provides handlers for the following AWS Lambda triggers:
+
+Currently the library provides handlers for the following AWS Lambda triggers:
+
+- API Gateway Proxy Handler
+- SNS Handler
+- SQS Handler
+- DynamoDB Stream Handler
 
 ### API Gateway Proxy Handler
 
@@ -67,7 +96,7 @@ import { applyMiddleware, RestApi } from "effect-lambda";
 import helmet from "helmet";
 import { Effect, pipe } from "effect";
 
-const toHandler = (effect: Parameters<typeof APIGProxyHandler>[0]) =>
+const toHandler = (effect: Parameters<typeof RestApi.toLambdaHandler>[0]) =>
   pipe(effect, Effect.map(applyMiddleware(helmet())), RestApi.toLambdaHandler);
 
 export const handler = Effect.succeed({
@@ -123,6 +152,13 @@ export const handler = toLambdaHandler(
 
 This handler allows you to process DynamoDB stream events in a functional way using the `effect-lambda` library. You can access each record in the stream and apply your business logic accordingly.
 
+## Useful other libraries to use with effect-lambda
+
+- [effect](https://effect.website) - Well you got to have this one to use this library :wink:
+  - `@effect/schema` - Peer dependency of this library for schemas
+  - `@effect/platform-node` - Fully effect native library for network requests, file system, etc.
+- [effect-aws](https://github.com/floydspace/effect-aws) - Effect wrapper for common AWS services like S3, DynamoDB, SNS, SQS, etc.
+
 ## TODO list
 
 Effect friendly wrapper for AWS Lambdas
@@ -134,7 +170,7 @@ Effect friendly wrapper for AWS Lambdas
 - [x] Authorizer Trigger
 - [x] SNS Trigger
 - [x] Change API naming to use namespaces
-- [ ] Add documentation
+- [x] Add documentation
 - [ ] Set up GitHub actions
 - [ ] APIGatewayProxyHandlerV2 - HTTP api with payload version 2
 - [ ] S3 Put Event Handler

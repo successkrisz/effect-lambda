@@ -1,26 +1,67 @@
 import {
     SQSEvent as _SQSEvent,
     SQSRecord as _SQSRecord,
-    SQSBatchResponse,
     SQSHandler,
 } from 'aws-lambda'
 import { Console, Context, Effect, Either, Layer } from 'effect'
 import { BatchResponse, HandlerContext } from './common'
 
+/**
+ * Represents an SQS event in the context of AWS Lambda.
+ * Extends the base SQSEvent from AWS Lambda types.
+ *
+ * @class
+ * @extends {Context.Tag}
+ */
 export class SQSEvent extends Context.Tag('@effect-lambda/SQSEvent')<
     SQSEvent,
     _SQSEvent
 >() {}
 
+/**
+ * Represents a single SQS record in the context of AWS Lambda.
+ * Extends the base SQSRecord from AWS Lambda types.
+ *
+ * @class
+ * @extends {Context.Tag}
+ */
 export class SQSRecord extends Context.Tag('@effect-lambda/SQSRecord')<
     SQSRecord,
     _SQSRecord
 >() {}
 
+/**
+ * Extracts the message bodies from an SQS event.
+ */
 export const SQSMessageBodies = SQSEvent.pipe(
     Effect.map((event) => event.Records.map((record) => record.body)),
 )
 
+/**
+ * Transform an effect into an SNSHandler.
+ *
+ * @param effect Effect.Effect<void, never, SQSEvent | HandlerContext>
+ * @returns SNSHandler
+ *
+ * @example
+ * ```typescript
+ * import { SQSEvent, toLambdaHandler } from '@effect-lambda/Sqs'
+ * import { Effect, Console } from 'effect'
+ *
+ * // Define an effect that processes each message in the SQS event
+ * const processSQSMessages = SQSEvent.pipe(
+ *   Effect.map((event) => event.Records),
+ *   Effect.tap((records) =>
+ *     Effect.forEach(records, (record) =>
+ *       Console.log(`Processing message: ${record.body}`)
+ *     )
+ *   )
+ * )
+ *
+ * // Convert the effect into a Lambda handler
+ * export const handler = processSQSMessages.pipe(toLambdaHandler)
+ * ```
+ */
 export const toLambdaHandler =
     (
         effect: Effect.Effect<
@@ -36,15 +77,6 @@ export const toLambdaHandler =
             Effect.provide(Layer.succeed(HandlerContext, context)),
             Effect.runPromise,
         )
-
-export const sqsBatchResponse =
-    (event: _SQSEvent) =>
-    (response: Either.Either<any, any>[]): SQSBatchResponse => ({
-        batchItemFailures: response
-            .map((eff, i) => [eff, event.Records[i].messageId] as const)
-            .filter(([eff]) => Either.isLeft(eff))
-            .map(([_, id]) => ({ itemIdentifier: id })),
-    })
 
 /**
  * recordProcessorAdapter - adapts a single record processor effect to a batch processor effect

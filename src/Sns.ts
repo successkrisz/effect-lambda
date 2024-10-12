@@ -7,6 +7,23 @@ export class SNSEvent extends Context.Tag('@effect-lambda/SNSEvent')<
     _SNSEvent
 >() {}
 
+/**
+ * Transform an effect into an SNSHandler.
+ *
+ * @param effect Effect.Effect<void, never, SNSEvent | HandlerContext>
+ * @returns SNSHandler
+ *
+ * @example
+ * ```typescript
+ * import { Console, Effect } from 'effect'
+ * import { toLambdaHandler } from '@effect-lambda/Sns'
+ *
+ * export const handler = toLambdaHandler(
+ *    Effect.void.pipe(
+ *       Effect.tap(() => Console.log('Hello, World!'))
+ *   )
+ * )
+ */
 export const toLambdaHandler =
     (
         effect: Effect.Effect<void, never, SNSEvent | HandlerContext>,
