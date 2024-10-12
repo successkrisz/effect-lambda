@@ -14,7 +14,7 @@ export class UnauthorizedError extends Data.TaggedError(
     '@effect-lambda/UnauthorizedError',
 )<{}> {}
 
-export const CustomAuthorizerHandler =
+export const toLambdaHandler =
     (
         effect: Effect.Effect<
             APIGatewayAuthorizerResult,

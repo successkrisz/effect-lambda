@@ -21,11 +21,11 @@ npm install effect-lambda effect @effect/schema
 
 ```typescript
 // handler.ts
-import { APIGProxyHandler } from "effect-lambda";
+import { RestApi } from "effect-lambda";
 import { Effect } from "effect";
 import { Schema } from "@effect/schema";
 
-export const handler = APIGProxyHandler(
+export const handler = RestApi.toLambdaHandler(
   Effect.succeed({
     statusCode: 200,
     body: JSON.stringify({ message: "Hello, World!" }),
@@ -39,12 +39,12 @@ const PayloadSchema = Schema.Struct({
 const PathParamsSchema = Schema.Struct({
   name: Schema.String,
 });
-export const handler = APIGProxyHandler(
-  schemaPathParams(PathParamsSchema).pipe(
+export const handler = RestApi.toLambdaHandler(
+  RestApi.schemaPathParams(PathParamsSchema).pipe(
     Effect.map(({ name }) => name),
     Effect.bindTo("name"),
     Effect.bind("message", () =>
-      schemaBodyJson(PayloadSchema).pipe(Effect.map((x) => x.message)),
+      RestApi.schemaBodyJson(PayloadSchema).pipe(Effect.map((x) => x.message)),
     ),
     Effect.map(({ name, message }) => ({
       statusCode: 200,
@@ -63,12 +63,12 @@ export const handler = APIGProxyHandler(
 You can use [helmet](https://www.npmjs.com/package/helmet) to secure your application using the provided applyMiddleware utility.
 
 ```typescript
-import { applyMiddleware, APIGProxyHandler } from "effect-lambda";
+import { applyMiddleware, RestApi } from "effect-lambda";
 import helmet from "helmet";
 import { Effect, pipe } from "effect";
 
 const toHandler = (effect: Parameters<typeof APIGProxyHandler>[0]) =>
-  pipe(effect, Effect.map(applyMiddleware(helmet())), APIGProxyHandler);
+  pipe(effect, Effect.map(applyMiddleware(helmet())), RestApi.toLambdaHandler);
 
 export const handler = Effect.succeed({
   statusCode: 200,
@@ -79,7 +79,23 @@ export const handler = Effect.succeed({
 ### SQS Trigger Handler
 
 ```typescript
-export const handler = SQSEventHandler(
+import { SQSEvent, toLambdaHandler } from "effect-lambda/Sqs";
+import { Effect } from "effect";
+export const handler = toLambdaHandler(
+  SQSEvent.pipe(
+    Effect.map((event) => {
+      // Do something with the event
+    }),
+  ),
+);
+```
+
+### SNS Trigger Handler
+
+```typescript
+import { SNSEvent, toLambdaHandler } from "effect-lambda/Sns";
+import { Effect } from "effect";
+export const handler = toLambdaHandler(
   SQSEvent.pipe(
     Effect.map((event) => {
       // Do something with the event
@@ -92,10 +108,10 @@ export const handler = SQSEventHandler(
 
 ```typescript
 // handler.ts
-import { DynamoDBStreamEventHandler } from "effect-lambda";
+import { toLambdaHandler } from "effect-lambda/DynamoDb";
 import { Effect } from "effect";
 
-export const handler = DynamoDBStreamEventHandler(
+export const handler = toLambdaHandler(
   Effect.map((event) => {
     event.Records.forEach((record) => {
       // Process each record
@@ -116,8 +132,8 @@ Effect friendly wrapper for AWS Lambdas
 - [x] DynamoDB Trigger
 - [x] Utility to deal with an array of records and produce a batchItemFailures response upon failures
 - [x] Authorizer Trigger
-- [ ] SNS Trigger
-- [ ] Change API naming to use namespaces
+- [x] SNS Trigger
+- [x] Change API naming to use namespaces
 - [ ] Add documentation
 - [ ] Set up GitHub actions
 - [ ] APIGatewayProxyHandlerV2 - HTTP api with payload version 2

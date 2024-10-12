@@ -1,5 +1,5 @@
 import { APIGatewayProxyEvent } from 'aws-lambda'
-import { headerNormalizer } from '../src/headerNormalizer'
+import { headerNormalizer } from '../src/internal/headerNormalizer'
 
 describe('headerNormalizer', () => {
     const createEvent = (

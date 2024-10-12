@@ -1,21 +1,21 @@
 import { Schema } from '@effect/schema'
 import { ParseOptions } from '@effect/schema/AST'
 import {
-    APIGatewayProxyEvent,
+    APIGatewayProxyEvent as _APIGatewayProxyEvent,
     APIGatewayProxyEventHeaders,
     APIGatewayProxyHandler,
     APIGatewayProxyResult,
 } from 'aws-lambda'
 import { Console, Context, Effect, Layer, pipe } from 'effect'
 import { HandlerContext } from './common'
-import { headerNormalizer } from './headerNormalizer'
-import { jsonBodyParser } from './jsonBodyParser'
+import { headerNormalizer } from './internal/headerNormalizer'
+import { jsonBodyParser } from './internal/jsonBodyParser'
 
-export class APIGProxyEvent extends Context.Tag(
-    '@effect-lambda/APIGProxyEvent',
+export class APIGatewayProxyEvent extends Context.Tag(
+    '@effect-lambda/APIGatewayProxyEvent',
 )<
-    APIGProxyEvent,
-    APIGatewayProxyEvent & {
+    APIGatewayProxyEvent,
+    _APIGatewayProxyEvent & {
         rawHeaders?: APIGatewayProxyEventHeaders
         rawBody?: unknown
     }
@@ -28,7 +28,7 @@ export const schemaBodyJson = <A, I, R extends never>(
     schema: Schema.Schema<A, I, R>,
     options?: ParseOptions | undefined,
 ) =>
-    APIGProxyEvent.pipe(
+    APIGatewayProxyEvent.pipe(
         Effect.map(({ body }) => body as unknown),
         Effect.flatMap((body) =>
             Schema.decodeUnknownEither(schema, options)(body),
@@ -42,7 +42,7 @@ export const schemaPathParams = <A, I, R extends never>(
     schema: Schema.Schema<A, I, R>,
     options?: ParseOptions | undefined,
 ) =>
-    APIGProxyEvent.pipe(
+    APIGatewayProxyEvent.pipe(
         Effect.map(({ pathParameters }) => pathParameters || {}),
         Effect.flatMap((pathParameters) =>
             Schema.decodeUnknownEither(schema, options)(pathParameters),
@@ -53,30 +53,30 @@ export const schemaQueryParams = <A, I, R extends never>(
     schema: Schema.Schema<A, I, R>,
     options?: ParseOptions | undefined,
 ) =>
-    APIGProxyEvent.pipe(
+    APIGatewayProxyEvent.pipe(
         Effect.map(({ queryStringParameters }) => queryStringParameters || {}),
         Effect.flatMap((queryStringParameters) =>
             Schema.decodeUnknownEither(schema, options)(queryStringParameters),
         ),
     )
 
-export const PathParameters = APIGProxyEvent.pipe(
+export const PathParameters = APIGatewayProxyEvent.pipe(
     Effect.map((x) => x.pathParameters || {}),
 )
 
 export type HandlerEffect = Effect.Effect<
     APIGatewayProxyResult,
     never,
-    APIGProxyEvent | HandlerContext
+    APIGatewayProxyEvent | HandlerContext
 >
 
-export const APIGProxyHandler =
+export const toLambdaHandler =
     (effect: HandlerEffect): APIGatewayProxyHandler =>
     async (event, context) =>
         effect.pipe(
             Effect.provide(
                 Layer.effect(
-                    APIGProxyEvent,
+                    APIGatewayProxyEvent,
                     pipe(event, headerNormalizer, jsonBodyParser),
                 ),
             ),

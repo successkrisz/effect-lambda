@@ -5,10 +5,10 @@ import { HandlerContext } from '../src/common'
 import {
     recordProcessorAdapter,
     SQSEvent,
-    SQSEventHandler,
+    toLambdaHandler as SQSEventHandler,
     SQSMessageBodies,
     SQSRecord,
-} from '../src/sqsHandler'
+} from '../src/Sqs'
 
 describe('sqsHandler', () => {
     it('should return void on an successful effect', async () => {

@@ -7,7 +7,7 @@ export class SNSEvent extends Context.Tag('@effect-lambda/SNSEvent')<
     _SNSEvent
 >() {}
 
-export const SNSEventHandler =
+export const toLambdaHandler =
     (
         effect: Effect.Effect<void, never, SNSEvent | HandlerContext>,
     ): SNSHandler =>

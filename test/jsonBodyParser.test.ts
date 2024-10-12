@@ -1,7 +1,7 @@
 import { ParseError } from '@effect/schema/ParseResult'
 import { APIGatewayProxyEvent } from 'aws-lambda'
 import { Effect } from 'effect'
-import { jsonBodyParser } from '../src/jsonBodyParser'
+import { jsonBodyParser } from '../src/internal/jsonBodyParser'
 
 describe('jsonBodyParser', () => {
     const createEvent = (

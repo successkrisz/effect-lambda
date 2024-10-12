@@ -2,11 +2,11 @@ import { Context } from 'aws-lambda'
 import { Effect } from 'effect'
 import event from './sampleEvents/snsEvent.json'
 import { HandlerContext } from '../src/common'
-import { SNSEvent, SNSEventHandler } from '../src/snsHandler'
+import { SNSEvent, toLambdaHandler } from '../src/Sns'
 
 describe('snsHandler', () => {
     it('should return void on a successful effect', async () => {
-        const actual = await SNSEventHandler(Effect.void)(
+        const actual = await toLambdaHandler(Effect.void)(
             event,
             {} as Context,
             () => {},
@@ -15,7 +15,7 @@ describe('snsHandler', () => {
     })
 
     it('should reject if the effect dies', async () => {
-        const actual = SNSEventHandler(Effect.die('error'))(
+        const actual = toLambdaHandler(Effect.die('error'))(
             event,
             {} as Context,
             () => {},
@@ -25,7 +25,7 @@ describe('snsHandler', () => {
     })
 
     it('effect should have access to the event', async () => {
-        const actual = SNSEventHandler(
+        const actual = toLambdaHandler(
             SNSEvent.pipe(
                 Effect.map((_event) => {
                     expect(_event).toEqual(event)
@@ -38,7 +38,7 @@ describe('snsHandler', () => {
 
     it('effect should have access to the context', async () => {
         const context = { functionName: 'foobar' } as Context
-        const actual = SNSEventHandler(
+        const actual = toLambdaHandler(
             HandlerContext.pipe(
                 Effect.map((_context) => {
                     expect(_context).toEqual(context)

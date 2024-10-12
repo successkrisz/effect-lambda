@@ -23,7 +23,7 @@ export const DynamoDBNewImages = DynamoDBStreamEvent.pipe(
 )
 
 // Define the DynamoDBStreamEventHandler
-export const DynamoDBStreamEventHandler =
+export const toLambdaHandler =
     (
         effect: Effect.Effect<
             void | BatchResponse,

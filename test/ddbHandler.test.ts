@@ -7,9 +7,9 @@ import event from './sampleEvents/ddbEvent.json'
 import { HandlerContext } from '../src/common'
 import {
     DynamoDBStreamEvent,
-    DynamoDBStreamEventHandler,
+    toLambdaHandler as DynamoDBStreamEventHandler,
     DynamoDBNewImages,
-} from '../src/ddbHandler'
+} from '../src/DynamoDb'
 
 describe('ddbHandler', () => {
     it('should return void on a successful effect', async () => {

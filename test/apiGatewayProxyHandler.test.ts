@@ -1,22 +1,22 @@
 import { ServerResponse } from 'node:http'
 import { Schema } from '@effect/schema'
-import { APIGatewayProxyEvent } from 'aws-lambda'
+import { APIGatewayProxyEvent as AwsAPIGatewayProxyEvent } from 'aws-lambda'
 import { Context, Effect, pipe } from 'effect'
+import { applyMiddleware, Middleware } from '../src/applyMiddleware'
 import {
-    APIGProxyEvent,
-    APIGProxyHandler,
+    APIGatewayProxyEvent,
+    toLambdaHandler,
     HandlerEffect,
     schemaBodyJson,
     schemaPathParams,
-} from '../src/apiGatewayProxyHandler'
-import { applyMiddleware, Middleware } from '../src/applyMiddleware'
+} from '../src/RestApi'
 
 describe('APIGProxyHandler', () => {
     const createEvent = (
         body: string | null,
         isBase64Encoded: boolean = false,
         headers: { [key: string]: string | undefined } = {},
-    ): APIGatewayProxyEvent => ({
+    ): AwsAPIGatewayProxyEvent => ({
         body,
         isBase64Encoded,
         headers,
@@ -32,15 +32,14 @@ describe('APIGProxyHandler', () => {
     })
 
     it('should include rawHeaders in the event', async () => {
-        let evt = { headers: {} } as Context.Tag.Service<APIGProxyEvent>
+        let evt = { headers: {} } as Context.Tag.Service<APIGatewayProxyEvent>
 
-        const handler = APIGProxyHandler(
-            APIGProxyEvent.pipe(
-                Effect.tap((e) => {
-                    evt = e
-                }),
-                Effect.as({ statusCode: 200, body: 'Woohoo' }),
-            ),
+        const handler = APIGatewayProxyEvent.pipe(
+            Effect.tap((e) => {
+                evt = e
+            }),
+            Effect.as({ statusCode: 200, body: 'Woohoo' }),
+            toLambdaHandler,
         )
 
         const rawHeaders = { 'Content-Type': 'application/json' }
@@ -53,10 +52,10 @@ describe('APIGProxyHandler', () => {
     })
 
     it('should include rawBody in the event', async () => {
-        let evt = {} as Context.Tag.Service<APIGProxyEvent>
+        let evt = {} as Context.Tag.Service<APIGatewayProxyEvent>
 
-        const handler = APIGProxyHandler(
-            APIGProxyEvent.pipe(
+        const handler = toLambdaHandler(
+            APIGatewayProxyEvent.pipe(
                 Effect.tap((e) => {
                     evt = e
                 }),
@@ -76,7 +75,7 @@ describe('APIGProxyHandler', () => {
     })
 
     it('should return effect result without body', async () => {
-        const handler = APIGProxyHandler(
+        const handler = toLambdaHandler(
             Effect.succeed({ statusCode: 200, body: 'Woohoo' }),
         )
 
@@ -88,7 +87,7 @@ describe('APIGProxyHandler', () => {
     })
 
     it('should return effect result with body as empty string', async () => {
-        const handler = APIGProxyHandler(
+        const handler = toLambdaHandler(
             Effect.succeed({ statusCode: 200, body: 'Woohoo' }),
         )
 
@@ -100,7 +99,7 @@ describe('APIGProxyHandler', () => {
     })
 
     it('should return 200 with body when event body is provided', async () => {
-        const handler = APIGProxyHandler(
+        const handler = toLambdaHandler(
             Effect.succeed({ statusCode: 200, body: 'Woohoo' }),
         )
 
@@ -112,7 +111,7 @@ describe('APIGProxyHandler', () => {
     })
 
     it('should return 200 with decoded body when event body is base64 encoded', async () => {
-        const handler = APIGProxyHandler(
+        const handler = toLambdaHandler(
             Effect.succeed({ statusCode: 200, body: 'Woohoo' }),
         )
 
@@ -129,7 +128,7 @@ describe('APIGProxyHandler', () => {
     })
 
     it('should return 500 when an error occurs', async () => {
-        const handler = APIGProxyHandler(
+        const handler = toLambdaHandler(
             Effect.die(new Error('Something went wrong')),
         )
 
@@ -141,7 +140,7 @@ describe('APIGProxyHandler', () => {
     })
 
     it('should return 400 when event body is not valid JSON', async () => {
-        const handler = APIGProxyHandler(
+        const handler = toLambdaHandler(
             Effect.succeed({ statusCode: 200, body: 'Woohoo' }),
         )
 
@@ -164,7 +163,7 @@ describe('APIGProxyHandler', () => {
         const PathParamsSchema = Schema.Struct({
             name: Schema.String,
         })
-        const handler = APIGProxyHandler(
+        const handler = toLambdaHandler(
             schemaPathParams(PathParamsSchema).pipe(
                 Effect.map(({ name }) => name),
                 Effect.bindTo('name'),
@@ -213,7 +212,7 @@ describe('APIGProxyHandler', () => {
         const handler = pipe(
             handlerEffect,
             Effect.map(applyMiddleware(middleware)),
-            APIGProxyHandler,
+            toLambdaHandler,
         )
 
         const event = createEvent(null, false, {})

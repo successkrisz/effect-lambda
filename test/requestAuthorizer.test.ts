@@ -1,9 +1,9 @@
 import { APIGatewayAuthorizerResult, Context } from 'aws-lambda'
 import { Effect } from 'effect'
 import {
-    CustomAuthorizerHandler,
+    toLambdaHandler as CustomAuthorizerHandler,
     UnauthorizedError,
-} from '../src/requestAuthorizer'
+} from '../src/CustomAuthorizer'
 import event from './sampleEvents/request-authorizer.json'
 
 describe('toHandler', () => {

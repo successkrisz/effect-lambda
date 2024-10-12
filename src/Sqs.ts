@@ -21,10 +21,10 @@ export const SQSMessageBodies = SQSEvent.pipe(
     Effect.map((event) => event.Records.map((record) => record.body)),
 )
 
-export const SQSEventHandler =
+export const toLambdaHandler =
     (
         effect: Effect.Effect<
-            void | SQSBatchResponse,
+            void | BatchResponse,
             never,
             SQSEvent | HandlerContext
         >,
@@ -36,11 +36,6 @@ export const SQSEventHandler =
             Effect.provide(Layer.succeed(HandlerContext, context)),
             Effect.runPromise,
         )
-
-export const SQSEventRecordHandler =
-    (_: Effect.Effect<void, never, SQSRecord | HandlerContext>): SQSHandler =>
-    () =>
-        Promise.reject('Not Implemented yet')
 
 export const sqsBatchResponse =
     (event: _SQSEvent) =>
@@ -78,8 +73,8 @@ export const sqsBatchResponse =
  * ```
  */
 export const recordProcessorAdapter = <E>(
-    effect: Effect.Effect<void, E, SQSRecord>,
-): Effect.Effect<BatchResponse | undefined, never, SQSEvent> =>
+    effect: Effect.Effect<void, E, SQSRecord | SQSEvent | HandlerContext>,
+): Effect.Effect<BatchResponse | undefined, never, SQSEvent | HandlerContext> =>
     Effect.gen(function* () {
         const { Records } = yield* SQSEvent
 
