@@ -39,12 +39,12 @@ npm install effect-lambda effect @effect/schema
 
 Currently the library provides handlers for the following AWS Lambda triggers:
 
-Currently the library provides handlers for the following AWS Lambda triggers:
-
 - API Gateway Proxy Handler
 - SNS Handler
 - SQS Handler
 - DynamoDB Stream Handler
+
+You can find TypeDocs for this package [here](https://successkrisz.github.io/effect-lambda/).
 
 ### API Gateway Proxy Handler
 
@@ -171,7 +171,7 @@ Effect friendly wrapper for AWS Lambdas
 - [x] SNS Trigger
 - [x] Change API naming to use namespaces
 - [x] Add documentation
-- [ ] Set up GitHub actions
+- [x] Set up GitHub actions
 - [ ] APIGatewayProxyHandlerV2 - HTTP api with payload version 2
 - [ ] S3 Put Event Handler
 - [ ] S3 Delete Event Handler
