@@ -39,6 +39,7 @@ project.package.addField('publishConfig', {
 project.addScripts({
     prepack: 'cp package.json lib/',
 })
+project.npmignore?.addPatterns('lib/dist')
 
 project.vscode?.settings.addSettings({
     'editor.defaultFormatter': 'esbenp.prettier-vscode',
