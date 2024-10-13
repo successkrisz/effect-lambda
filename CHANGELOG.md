@@ -1,4 +1,11 @@
 
+## [0.0.9](https://github.com/successkrisz/effect-lambda/compare/v0.0.8...v0.0.9) (2024-10-13)
+
+
+### Bug Fixes
+
+* add dist to lib/npm ignore ([19c6003](https://github.com/successkrisz/effect-lambda/commit/19c60038a1b54879f9a530d1de774f665eeb298e))
+
 ## [0.0.8](https://github.com/successkrisz/effect-lambda/compare/v0.0.7...v0.0.8) (2024-10-13)
 
 
