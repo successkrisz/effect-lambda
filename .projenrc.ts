@@ -29,6 +29,7 @@ const project = new typescript.TypeScriptProject({
 })
 
 new TypedocDocgen(project)
+project.npmignore?.exclude('docs')
 
 project.vscode?.settings.addSettings({
     'editor.defaultFormatter': 'esbenp.prettier-vscode',

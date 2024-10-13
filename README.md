@@ -177,3 +177,5 @@ Effect friendly wrapper for AWS Lambdas
 - [ ] S3 Delete Event Handler
 - [ ] SES Trigger
 - [ ] EventBridge Trigger
+- [ ] Add Lambda runtime to allow graceful shutdown and clearing up of resources
+- [ ] Add content negotiation for API Gateway Handlers
