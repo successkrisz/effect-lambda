@@ -1,4 +1,11 @@
 
+## [0.0.8](https://github.com/successkrisz/effect-lambda/compare/v0.0.7...v0.0.8) (2024-10-13)
+
+
+### Bug Fixes
+
+* export namespacing ([3f94f41](https://github.com/successkrisz/effect-lambda/commit/3f94f415ff1812be83b2412cd995f6728389b9ee))
+
 ## [0.0.7](https://github.com/successkrisz/effect-lambda/compare/v0.0.6...v0.0.7) (2024-10-13)
 
 
