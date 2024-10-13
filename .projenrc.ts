@@ -22,14 +22,23 @@ const project = new typescript.TypeScriptProject({
     releaseTrigger: ReleaseTrigger.manual(),
     github: true,
     releaseToNpm: true,
+    entrypoint: 'index.js',
 
     deps: ['@types/aws-lambda'],
-    peerDeps: ['effect', '@effect/schema'],
+    peerDeps: ['effect@3.9.1', '@effect/schema@0.75.3'],
     devDeps: ['helmet'],
 })
 
 new TypedocDocgen(project)
 project.npmignore?.exclude('docs')
+
+project.package.addField('publishConfig', {
+    access: 'public',
+    directory: 'lib',
+})
+project.addScripts({
+    prepack: 'cp package.json lib/',
+})
 
 project.vscode?.settings.addSettings({
     'editor.defaultFormatter': 'esbenp.prettier-vscode',

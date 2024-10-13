@@ -89,10 +89,12 @@
     },
     {
       "name": "@effect/schema",
+      "version": "0.75.3",
       "type": "peer"
     },
     {
       "name": "effect",
+      "version": "3.9.1",
       "type": "peer"
     },
     {

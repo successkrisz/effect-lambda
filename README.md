@@ -10,10 +10,71 @@ Effect friendly wrapper for AWS Lambda functions.
 
 Have been using lambda functions as a primary way to build serverless applications for a while now. Since I made the switch from `fp-ts` to `effect`, I wanted to use effects all the way when writing lambda functions, replacing the previous usage of `middy` and `fp-ts`. This library is an attempt to provide a functional way to write lambda functions using the `effect` library. The library is inspired by the `@effect/platform` library and aims to provide a similar experience for writing lambda functions.
 
+## Main Concepts & Caveats
+
+**Pros:**
+The main approach of this library to use simple Effects as lambda handlers, allowing access at any point to the event and context allowing some really cool patterns.
+
+- For some of the handlers, this lends itself to more accessible patterns, like an API Gateway handler that provides the payload base64 encoded and stringified in the event body, so being able to abstract away that or normalize headers is quite useful.
+- Or take an SQS handler which can operate on individual records in a batch, and provide a utility to handle batch failures.
+
+Take a look at the following example:
+
+```typescript
+import {
+  APIGatewayProxyEvent,
+  schemaBodyJson,
+  toLambdaHandler,
+} from "effect-lambda/RestApi";
+import { Effect, Console } from "effect";
+import { Schema } from "@effect/schema";
+
+const PayloadSchema = Schema.Struct({
+  message: Schema.String,
+});
+
+export const _handler = schemaBodyJson(PayloadSchema).pipe(
+  Effect.map((payload) => ({
+    statusCode: 200,
+    body: JSON.stringify({ message: payload.message }),
+  })),
+  Effect.catchTag("ParseError", () =>
+    Effect.succeed({
+      statusCode: 400,
+      body: "Bad Request",
+    }),
+  ),
+);
+
+export const handler = _handler.pipe(toLambdaHandler);
+
+// Or you can add a post processing middleware to the handler just by mapping over the effect
+export const handlerWithMiddleware = _handler.pipe(
+  Effect.map((response) => ({
+    ...response,
+    headers: { "Content-Type": "application/json" },
+  })),
+  toLambdaHandler,
+);
+
+// Or you can add a pre-processing middleware
+export const handlerWithPreMiddleware = APIGatewayProxyEvent.pipe(
+  Effect.tap((event) => Console.log(`Received event: ${event}`)),
+  Effect.flatMap(() => _handler),
+  toLambdaHandler,
+);
+```
+
+**Cons:**
+
+- This approach of making the event accessible at any point in the handler requires individual wrappers for each type of event.
+- When using a layered architecture, the lambda specific wrapper should be fairly thin, essentially just extracting the domain input for the "use case" layer and map back the domain output to the lambda output.
+
 ## Table of Contents
 
 - [effect-lambda](#effect-lambda)
   - [Motivation](#motivation)
+  - [Main Concepts \& Caveats](#main-concepts--caveats)
   - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
   - [Usage](#usage)
