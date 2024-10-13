@@ -1,4 +1,11 @@
 
+## [0.0.7](https://github.com/successkrisz/effect-lambda/compare/v0.0.6...v0.0.7) (2024-10-13)
+
+
+### Bug Fixes
+
+* exclude docs from release artifact ([ce86588](https://github.com/successkrisz/effect-lambda/commit/ce865882cfb74a61a3bcb68631a17a46d3166014))
+
 ## [0.0.6](https://github.com/successkrisz/effect-lambda/compare/v0.0.5...v0.0.6) (2024-10-12)
 
 
