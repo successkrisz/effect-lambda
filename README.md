@@ -1,6 +1,6 @@
 # effect-lambda
 
-[![NPM Version](https://img.shields.io/npm/v/effect-lambda)](https://www.npmjs.com/package/effect-lambda) ![npm](https://img.shields.io/npm/dt/effect-lambda?label=Total%20Downloads) ![npm](https://img.shields.io/npm/dw/effect-lambda?label=Weekly%20Downloads)
+[![NPM Version](https://img.shields.io/npm/v/effect-lambda)](https://www.npmjs.com/package/effect-lambda) ![npm](https://img.shields.io/npm/dt/effect-lambda?label=Total%20Downloads) ![npm](https://img.shields.io/npm/dw/effect-lambda?label=Weekly%20Downloads) [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Online-brightgreen)](https://successkrisz.github.io/effect-lambda/)
 
 Effect friendly wrapper for AWS Lambda functions.
 
