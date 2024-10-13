@@ -1,8 +1,9 @@
 {
   "name": "effect-lambda",
+  "description": "Effects as AWS lambda handlers",
   "repository": {
     "type": "git",
-    "url": "git@github.com:successkrisz/effect-lambda.git"
+    "url": "https://github.com/successkrisz/effect-lambda.git"
   },
   "scripts": {
     "build": "npx projen build",
@@ -26,6 +27,11 @@
     "watch": "npx projen watch",
     "projen": "npx projen"
   },
+  "author": {
+    "name": "Krisztian Balla",
+    "url": "https://github.com/successkrisz",
+    "organization": false
+  },
   "devDependencies": {
     "@effect/schema": "latest",
     "@types/jest": "^29.5.13",
@@ -44,10 +50,10 @@
     "jest": "^29.7.0",
     "jest-junit": "^15",
     "prettier": "^3.3.3",
-    "projen": "^0.88.1",
+    "projen": "^0.88.2",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "typedoc": "^0.26.8",
+    "typedoc": "^0.26.9",
     "typescript": "^5.6.3"
   },
   "peerDependencies": {

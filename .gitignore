@@ -3,6 +3,7 @@
 !/.projen/tasks.json
 !/.projen/deps.json
 !/.projen/files.json
+!/.github/workflows/pull-request-lint.yml
 !/package.json
 !/LICENSE
 !/.npmignore
@@ -32,8 +33,12 @@ jspm_packages/
 /test-reports/
 junit.xml
 /coverage/
+!/.github/workflows/build.yml
 /dist/changelog.md
 /dist/version.txt
+!/.mergify.yml
+!/.github/workflows/upgrade-master.yml
+!/.github/pull_request_template.md
 !/.prettierignore
 !/.prettierrc.json
 !/.npmrc
