@@ -136,7 +136,9 @@ describe('APIGProxyHandler', () => {
         const result = await handler(event, {} as any, () => {})
 
         expect(result?.statusCode).toBe(500)
-        expect(result?.body).toBe('Internal Server Error')
+        expect(result?.body).toBe(
+            JSON.stringify({ message: 'Internal Server Error' }),
+        )
     })
 
     it('should return 400 when event body is not valid JSON', async () => {
@@ -150,7 +152,9 @@ describe('APIGProxyHandler', () => {
         const result = await handler(event, {} as any, () => {})
 
         expect(result?.statusCode).toBe(400)
-        expect(result?.body).toBe('Invalid JSON')
+        expect(result?.body).toBe(
+            JSON.stringify({ message: 'Payload is not a valid JSON' }),
+        )
     })
 
     // ====================

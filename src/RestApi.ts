@@ -122,14 +122,19 @@ export const toLambdaHandler =
                 ),
             ),
             Effect.catchTag('ParseError', () =>
-                Effect.succeed({ statusCode: 400, body: 'Invalid JSON' }),
+                Effect.succeed({
+                    statusCode: 400,
+                    body: JSON.stringify({
+                        message: 'Payload is not a valid JSON',
+                    }),
+                }),
             ),
             Effect.provide(Layer.succeed(HandlerContext, context)),
             Effect.tapDefect(Console.error),
             Effect.catchAllDefect(() =>
                 Effect.succeed({
                     statusCode: 500,
-                    body: 'Internal Server Error',
+                    body: JSON.stringify({ message: 'Internal Server Error' }),
                 }),
             ),
             Effect.runPromise,
