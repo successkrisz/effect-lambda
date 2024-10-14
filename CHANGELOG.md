@@ -1,4 +1,11 @@
 
+## [0.0.10](https://github.com/successkrisz/effect-lambda/compare/v0.0.9...v0.0.10) (2024-10-14)
+
+
+### Bug Fixes
+
+* **RestApi:** return json error bodies ([f80f8c5](https://github.com/successkrisz/effect-lambda/commit/f80f8c515284821c66108cc4c2a757b7e3dc2a7d))
+
 ## [0.0.9](https://github.com/successkrisz/effect-lambda/compare/v0.0.8...v0.0.9) (2024-10-13)
 
 
