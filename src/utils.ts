@@ -16,3 +16,7 @@ export type ToEffect<
     T extends (...args: any) => void | Promise<any>,
     R,
 > = Effect.Effect<Exclude<Awaited<ReturnType<T>>, void>, never, R>
+
+export type LowercaseKeys<T> = {
+    [K in keyof T as Lowercase<string & K>]: T[K]
+}

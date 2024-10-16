@@ -6,10 +6,11 @@ import {
     APIGatewayProxyHandler,
     APIGatewayProxyResult,
 } from 'aws-lambda'
-import { Console, Context, Effect, Layer, pipe } from 'effect'
+import { Context, Effect, Layer, pipe } from 'effect'
 import { HandlerContext } from './common'
 import { headerNormalizer } from './internal/headerNormalizer'
 import { jsonBodyParser } from './internal/jsonBodyParser'
+import { LowercaseKeys } from './utils'
 
 /**
  * The API Gateway event with additional fields for raw headers and
@@ -25,11 +26,15 @@ export class APIGatewayProxyEvent extends Context.Tag(
     '@effect-lambda/APIGatewayProxyEvent',
 )<
     APIGatewayProxyEvent,
-    _APIGatewayProxyEvent & {
+    Omit<_APIGatewayProxyEvent, 'headers'> & {
         rawHeaders?: APIGatewayProxyEventHeaders
-        rawBody?: unknown
+        headers: LowercaseKeys<APIGatewayProxyEventHeaders>
     }
 >() {}
+
+export const NormalizedHeaders = APIGatewayProxyEvent.pipe(
+    Effect.map((event) => event.headers),
+)
 
 /**
  * Utility to parse the body of an API Gateway event into a type.
@@ -39,6 +44,7 @@ export const schemaBodyJson = <A, I, R extends never>(
     options?: ParseOptions | undefined,
 ) =>
     APIGatewayProxyEvent.pipe(
+        Effect.flatMap(jsonBodyParser),
         Effect.map(({ body }) => body as unknown),
         Effect.flatMap((body) =>
             Schema.decodeUnknownEither(schema, options)(body),
@@ -116,21 +122,12 @@ export const toLambdaHandler =
     async (event, context) =>
         effect.pipe(
             Effect.provide(
-                Layer.effect(
+                Layer.succeed(
                     APIGatewayProxyEvent,
-                    pipe(event, headerNormalizer, jsonBodyParser),
+                    pipe(event, headerNormalizer),
                 ),
             ),
-            Effect.catchTag('ParseError', () =>
-                Effect.succeed({
-                    statusCode: 400,
-                    body: JSON.stringify({
-                        message: 'Payload is not a valid JSON',
-                    }),
-                }),
-            ),
             Effect.provide(Layer.succeed(HandlerContext, context)),
-            Effect.tapDefect(Console.error),
             Effect.catchAllDefect(() =>
                 Effect.succeed({
                     statusCode: 500,

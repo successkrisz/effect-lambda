@@ -1,6 +1,8 @@
 import { APIGatewayProxyEvent } from 'aws-lambda'
 
-const normalizeHeaders = (headers: { [key: string]: string | undefined }) =>
+export const normalizeHeaders = (headers: {
+    [key: string]: string | undefined
+}) =>
     Object.keys(headers).reduce(
         (acc, key) => {
             acc[key.toLowerCase()] = headers[key]
