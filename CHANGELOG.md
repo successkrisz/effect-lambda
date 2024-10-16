@@ -1,4 +1,11 @@
 
+## [0.0.11](https://github.com/successkrisz/effect-lambda/compare/v0.0.10...v0.0.11) (2024-10-16)
+
+
+### Features
+
+* **RestApi:** move body parsing to schemaBodyJson ([0a40e56](https://github.com/successkrisz/effect-lambda/commit/0a40e563e8472a8e2cb004c016dce508189efd18))
+
 ## [0.0.10](https://github.com/successkrisz/effect-lambda/compare/v0.0.9...v0.0.10) (2024-10-14)
 
 
