@@ -1,4 +1,11 @@
 
+## [0.0.12](https://github.com/successkrisz/effect-lambda/compare/v0.0.11...v0.0.12) (2024-10-17)
+
+
+### Bug Fixes
+
+* clean up packaging step ([1c57308](https://github.com/successkrisz/effect-lambda/commit/1c573084918a29bd35ed6665ead86ea6cc95aa60))
+
 ## [0.0.11](https://github.com/successkrisz/effect-lambda/compare/v0.0.10...v0.0.11) (2024-10-16)
 
 
