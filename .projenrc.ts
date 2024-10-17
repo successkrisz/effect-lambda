@@ -37,7 +37,8 @@ project.package.addField('publishConfig', {
     directory: 'lib',
 })
 project.addScripts({
-    prepack: 'cp package.json lib/',
+    prepack:
+        'rm -rf lib/LICENSE lib/package.json lib/.npmignore && cp package.json LICENSE .npmignore lib/',
 })
 project.npmignore?.addPatterns('lib/dist')
 

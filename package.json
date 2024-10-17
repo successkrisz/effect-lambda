@@ -26,7 +26,7 @@
     "upgrade": "npx projen upgrade",
     "watch": "npx projen watch",
     "projen": "npx projen",
-    "prepack": "cp package.json lib/"
+    "prepack": "rm -rf lib/LICENSE lib/package.json lib/.npmignore && cp package.json LICENSE .npmignore lib/"
   },
   "author": {
     "name": "Krisztian Balla",
