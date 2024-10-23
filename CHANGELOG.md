@@ -1,4 +1,11 @@
 
+## [0.0.14](https://github.com/successkrisz/effect-lambda/compare/v0.0.13...v0.0.14) (2024-10-23)
+
+
+### Features
+
+* update to effect@3.10.1 and remove dependency on schema ([9780ea8](https://github.com/successkrisz/effect-lambda/commit/9780ea858c31286ba9c7ebe0c9b84ad80192a564))
+
 ## [0.0.13](https://github.com/successkrisz/effect-lambda/compare/v0.0.12...v0.0.13) (2024-10-17)
 
 ## [0.0.12](https://github.com/successkrisz/effect-lambda/compare/v0.0.11...v0.0.12) (2024-10-17)
