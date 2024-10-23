@@ -25,7 +25,7 @@ const project = new typescript.TypeScriptProject({
     entrypoint: 'index.js',
 
     deps: ['@types/aws-lambda'],
-    peerDeps: ['effect@^3.9.2', '@effect/schema@^0.75.5'],
+    peerDeps: ['effect@^3.10.1'],
     devDeps: ['helmet'],
 })
 

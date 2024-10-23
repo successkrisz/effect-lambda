@@ -1,7 +1,6 @@
 import { ServerResponse } from 'node:http'
-import { Schema } from '@effect/schema'
 import { APIGatewayProxyEvent as AwsAPIGatewayProxyEvent } from 'aws-lambda'
-import { Context, Effect, pipe } from 'effect'
+import { Context, Effect, pipe, Schema } from 'effect'
 import { applyMiddleware, Middleware } from '../src/applyMiddleware'
 import {
     toLambdaHandler,

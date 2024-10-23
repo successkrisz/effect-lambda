@@ -1,12 +1,10 @@
-import { Schema } from '@effect/schema'
-import { ParseOptions } from '@effect/schema/AST'
 import {
     APIGatewayProxyEvent as _APIGatewayProxyEvent,
     APIGatewayProxyEventHeaders,
     APIGatewayProxyHandler,
     APIGatewayProxyResult,
 } from 'aws-lambda'
-import { Context, Effect, Layer, pipe } from 'effect'
+import { Context, Effect, Layer, pipe, Schema, SchemaAST } from 'effect'
 import { HandlerContext } from './common'
 import { headerNormalizer } from './internal/headerNormalizer'
 import { jsonBodyParser } from './internal/jsonBodyParser'
@@ -41,7 +39,7 @@ export const NormalizedHeaders = APIGatewayProxyEvent.pipe(
  */
 export const schemaBodyJson = <A, I, R extends never>(
     schema: Schema.Schema<A, I, R>,
-    options?: ParseOptions | undefined,
+    options?: SchemaAST.ParseOptions | undefined,
 ) =>
     APIGatewayProxyEvent.pipe(
         Effect.flatMap(jsonBodyParser),
@@ -56,7 +54,7 @@ export const schemaBodyJson = <A, I, R extends never>(
  */
 export const schemaPathParams = <A, I, R extends never>(
     schema: Schema.Schema<A, I, R>,
-    options?: ParseOptions | undefined,
+    options?: SchemaAST.ParseOptions | undefined,
 ) =>
     APIGatewayProxyEvent.pipe(
         Effect.map(({ pathParameters }) => pathParameters || {}),
@@ -70,7 +68,7 @@ export const schemaPathParams = <A, I, R extends never>(
  */
 export const schemaQueryParams = <A, I, R extends never>(
     schema: Schema.Schema<A, I, R>,
-    options?: ParseOptions | undefined,
+    options?: SchemaAST.ParseOptions | undefined,
 ) =>
     APIGatewayProxyEvent.pipe(
         Effect.map(({ queryStringParameters }) => queryStringParameters || {}),

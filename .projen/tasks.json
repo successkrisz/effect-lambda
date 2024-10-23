@@ -272,7 +272,7 @@
           "exec": "pnpm i --no-frozen-lockfile"
         },
         {
-          "exec": "pnpm update @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser commit-and-tag-version constructs eslint-config-prettier eslint-import-resolver-typescript eslint-plugin-import eslint-plugin-prettier eslint helmet jest jest-junit prettier projen ts-jest ts-node typedoc typescript @effect/schema effect @types/aws-lambda"
+          "exec": "pnpm update @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser commit-and-tag-version constructs eslint-config-prettier eslint-import-resolver-typescript eslint-plugin-import eslint-plugin-prettier eslint helmet jest jest-junit prettier projen ts-jest ts-node typedoc typescript effect @types/aws-lambda"
         },
         {
           "exec": "npx projen"

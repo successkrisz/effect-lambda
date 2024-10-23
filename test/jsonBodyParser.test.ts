@@ -1,6 +1,5 @@
-import { ParseError } from '@effect/schema/ParseResult'
 import { APIGatewayProxyEvent } from 'aws-lambda'
-import { Effect } from 'effect'
+import { Effect, ParseResult } from 'effect'
 import { jsonBodyParser } from '../src/internal/jsonBodyParser'
 
 describe('jsonBodyParser', () => {
@@ -67,6 +66,6 @@ describe('jsonBodyParser', () => {
                 Effect.catchTag('ParseError', (e) => Effect.succeed(e)),
                 Effect.runPromise,
             ),
-        ).resolves.toBeInstanceOf(ParseError)
+        ).resolves.toBeInstanceOf(ParseResult.ParseError)
     })
 })
