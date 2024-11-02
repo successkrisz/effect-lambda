@@ -266,7 +266,7 @@
       },
       "steps": [
         {
-          "exec": "pnpm dlx npm-check-updates@16 --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@types/jest,eslint-config-prettier,eslint-import-resolver-typescript,eslint-plugin-import,eslint-plugin-prettier,helmet,jest,prettier,projen,ts-jest,ts-node,typedoc,typescript,@types/aws-lambda"
+          "exec": "pnpm dlx npm-check-updates@16 --upgrade --target=minor --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@types/jest,eslint-config-prettier,eslint-import-resolver-typescript,eslint-plugin-import,eslint-plugin-prettier,helmet,jest,prettier,projen,ts-jest,ts-node,typedoc,typescript,@types/aws-lambda"
         },
         {
           "exec": "pnpm i --no-frozen-lockfile"
