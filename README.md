@@ -180,6 +180,27 @@ export const handler = toLambdaHandler(
 );
 ```
 
+You can also use a record processor to process each record in a batch individually.
+
+```typescript
+import {
+  SQSRecord,
+  toLambdaHandler,
+  recordProcessorAdapter,
+} from "effect-lambda/Sqs";
+import { Effect } from "effect";
+
+const processRecord = SQSRecord.pipe(
+  Effect.map((record) => {
+    // Do something with the record
+  }),
+);
+
+export const handler = toLambdaHandler(
+  processRecord.pipe(recordProcessorAdapter),
+);
+```
+
 ### SNS Trigger Handler
 
 ```typescript
