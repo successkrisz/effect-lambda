@@ -38,7 +38,7 @@ export const SQSMessageBodies = SQSEvent.pipe(
 )
 
 /**
- * Transform an effect into an SNSHandler.
+ * Transform an effect into an SQSHandler.
  *
  * @param effect Effect.Effect<void, never, SQSEvent | HandlerContext>
  * @returns SNSHandler
