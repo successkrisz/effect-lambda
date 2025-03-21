@@ -1,10 +1,10 @@
 import {
     DynamoDBStreamEvent as _DynamoDBStreamEvent,
     DynamoDBRecord as _DynamoDBRecord,
-    DynamoDBStreamHandler,
 } from 'aws-lambda'
-import { Console, Context, Effect, Layer } from 'effect'
-import { BatchResponse, HandlerContext } from './common'
+import { Context, Effect } from 'effect'
+import { BatchResponse } from './common'
+import { makeToHandler } from './makeToHandler'
 
 // Define a context tag for DynamoDBStreamEvent
 export class DynamoDBStreamEvent extends Context.Tag(
@@ -23,18 +23,6 @@ export const DynamoDBNewImages = DynamoDBStreamEvent.pipe(
 )
 
 // Define the DynamoDBStreamEventHandler
-export const toLambdaHandler =
-    (
-        effect: Effect.Effect<
-            void | BatchResponse,
-            never,
-            DynamoDBStreamEvent | HandlerContext
-        >,
-    ): DynamoDBStreamHandler =>
-    async (event, context) =>
-        effect.pipe(
-            Effect.tapDefect(Console.error),
-            Effect.provide(Layer.succeed(DynamoDBStreamEvent, event)),
-            Effect.provide(Layer.succeed(HandlerContext, context)),
-            Effect.runPromise,
-        )
+export const toLambdaHandler = makeToHandler(
+    DynamoDBStreamEvent,
+)<void | BatchResponse>

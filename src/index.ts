@@ -1,4 +1,5 @@
 export { ToEffect } from './utils'
+export { makeToHandler } from './makeToHandler'
 export * as CustomAuthorizer from './CustomAuthorizer'
 export * as DynamoDb from './DynamoDb'
 export * as RestApi from './RestApi'

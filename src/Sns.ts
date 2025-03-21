@@ -1,6 +1,6 @@
-import { SNSEvent as _SNSEvent, SNSHandler } from 'aws-lambda'
-import { Console, Context, Effect, Layer } from 'effect'
-import { HandlerContext } from './common'
+import { SNSEvent as _SNSEvent } from 'aws-lambda'
+import { Context } from 'effect'
+import { makeToHandler } from './makeToHandler'
 
 export class SNSEvent extends Context.Tag('@effect-lambda/SNSEvent')<
     SNSEvent,
@@ -24,14 +24,5 @@ export class SNSEvent extends Context.Tag('@effect-lambda/SNSEvent')<
  *   )
  * )
  */
-export const toLambdaHandler =
-    (
-        effect: Effect.Effect<void, never, SNSEvent | HandlerContext>,
-    ): SNSHandler =>
-    async (event, context) =>
-        effect.pipe(
-            Effect.tapDefect(Console.error),
-            Effect.provide(Layer.succeed(SNSEvent, event)),
-            Effect.provide(Layer.succeed(HandlerContext, context)),
-            Effect.runPromise,
-        )
+
+export const toLambdaHandler = makeToHandler(SNSEvent)<void>

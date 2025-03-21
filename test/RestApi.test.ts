@@ -1,6 +1,6 @@
 import { ServerResponse } from 'node:http'
 import { APIGatewayProxyEvent as AwsAPIGatewayProxyEvent } from 'aws-lambda'
-import { Context, Effect, pipe, Schema } from 'effect'
+import { Context, Effect, pipe, Schema, Layer } from 'effect'
 import { applyMiddleware, Middleware } from '../src/applyMiddleware'
 import {
     toLambdaHandler,
@@ -33,13 +33,12 @@ const createEvent = (
 describe('RestApi', () => {
     describe('NormalizedHeaders', () => {
         it('should normalize headers', async () => {
-            const handler = toLambdaHandler(
-                NormalizedHeaders.pipe(
-                    Effect.map((headers) => ({
-                        statusCode: 200,
-                        body: JSON.stringify(headers),
-                    })),
-                ),
+            const handler = NormalizedHeaders.pipe(
+                Effect.map((headers) => ({
+                    statusCode: 200,
+                    body: JSON.stringify(headers),
+                })),
+                toLambdaHandler,
             )
 
             const event = createEvent(null, false, {
@@ -290,26 +289,25 @@ describe('RestApi', () => {
         const PathParamsSchema = Schema.Struct({
             name: Schema.String,
         })
-        const handler = toLambdaHandler(
-            schemaPathParams(PathParamsSchema).pipe(
-                Effect.map(({ name }) => name),
-                Effect.bindTo('name'),
-                Effect.bind('message', () =>
-                    schemaBodyJson(PayloadSchema).pipe(
-                        Effect.map((x) => x.message),
-                    ),
-                ),
-                Effect.map(({ name, message }) => ({
-                    statusCode: 200,
-                    body: `Hello ${name}, ${message}`,
-                })),
-                Effect.catchTag('ParseError', () =>
-                    Effect.succeed({
-                        statusCode: 400,
-                        body: 'Invalid JSON',
-                    }),
+        const handler = schemaPathParams(PathParamsSchema).pipe(
+            Effect.map(({ name }) => name),
+            Effect.bindTo('name'),
+            Effect.bind('message', () =>
+                schemaBodyJson(PayloadSchema).pipe(
+                    Effect.map((x) => x.message),
                 ),
             ),
+            Effect.map(({ name, message }) => ({
+                statusCode: 200,
+                body: `Hello ${name}, ${message}`,
+            })),
+            Effect.catchTag('ParseError', () =>
+                Effect.succeed({
+                    statusCode: 400,
+                    body: 'Invalid JSON',
+                }),
+            ),
+            toLambdaHandler,
         )
 
         const event = {
@@ -334,7 +332,7 @@ describe('RestApi', () => {
                 res.setHeader('X-XSS-Protection', '0')
             }) as Middleware
 
-        const handlerEffect: HandlerEffect = Effect.succeed({
+        const handlerEffect: HandlerEffect<never> = Effect.succeed({
             statusCode: 200,
             body: 'Woohoo',
         })

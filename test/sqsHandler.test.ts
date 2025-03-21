@@ -5,14 +5,14 @@ import { HandlerContext } from '../src/common'
 import {
     recordProcessorAdapter,
     SQSEvent,
-    toLambdaHandler as SQSEventHandler,
+    toLambdaHandler,
     SQSMessageBodies,
     SQSRecord,
 } from '../src/Sqs'
 
 describe('sqsHandler', () => {
     it('should return void on an successful effect', async () => {
-        const actual = await SQSEventHandler(Effect.void)(
+        const actual = await toLambdaHandler(Effect.void)(
             event,
             {} as Context,
             () => {},
@@ -21,7 +21,7 @@ describe('sqsHandler', () => {
     })
 
     it('should reject if the effect dies', async () => {
-        const actual = SQSEventHandler(Effect.die('error'))(
+        const actual = toLambdaHandler(Effect.die('error'))(
             event,
             {} as Context,
             () => {},
@@ -31,7 +31,7 @@ describe('sqsHandler', () => {
     })
 
     it('effect should have access to the event', async () => {
-        const actual = SQSEventHandler(
+        const actual = toLambdaHandler(
             SQSEvent.pipe(
                 Effect.map((_event) => {
                     expect(_event).toEqual(event)
@@ -44,7 +44,7 @@ describe('sqsHandler', () => {
 
     it('effect should have access to the context', async () => {
         const context = { functionName: 'foobar' } as Context
-        const actual = SQSEventHandler(
+        const actual = toLambdaHandler(
             HandlerContext.pipe(
                 Effect.map((_context) => {
                     expect(_context).toEqual(context)
@@ -58,7 +58,7 @@ describe('sqsHandler', () => {
     })
 
     it('should have access to the MessageBodies', async () => {
-        const actual = SQSEventHandler(
+        const actual = toLambdaHandler(
             SQSMessageBodies.pipe(
                 Effect.map((messageBodies) => {
                     expect(messageBodies).toEqual(
@@ -76,12 +76,13 @@ describe('sqsHandler', () => {
             Effect.tap((record) => {
                 expect(record.body).toBeDefined()
             }),
+            Effect.asVoid,
         )
 
         const result = await processRecord.pipe(
             recordProcessorAdapter,
             Effect.provideService(SQSEvent, event),
-            SQSEventHandler,
+            toLambdaHandler,
         )(event, {} as Context, () => {})
 
         expect(result).toEqual({
@@ -109,7 +110,7 @@ describe('sqsHandler', () => {
         const result = await processRecord.pipe(
             recordProcessorAdapter,
             Effect.provideService(SQSEvent, modifiedEvent),
-            SQSEventHandler,
+            toLambdaHandler,
         )(event, {} as Context, () => {})
 
         expect(result).toEqual({

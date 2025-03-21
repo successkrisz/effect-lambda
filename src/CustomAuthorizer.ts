@@ -25,7 +25,11 @@ export const toLambdaHandler =
     (event, context) =>
         pipe(
             effect,
-            Effect.provide(Layer.succeed(APIGatewayAuthorizerEvent, event)),
-            Effect.provide(Layer.succeed(HandlerContext, context)),
+            Effect.provide(
+                Layer.provideMerge(
+                    Layer.sync(APIGatewayAuthorizerEvent, () => event),
+                    Layer.sync(HandlerContext, () => context),
+                ),
+            ),
             Effect.runPromise,
         )

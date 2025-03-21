@@ -254,6 +254,7 @@ Effect friendly wrapper for AWS Lambdas
 - [x] Change API naming to use namespaces
 - [x] Add documentation
 - [x] Set up GitHub actions
+- [x] Generic makeToHandler function to allow creating ergonomic handlers for different handler types
 - [ ] APIGatewayProxyHandlerV2 - HTTP api with payload version 2
 - [ ] S3 Put Event Handler
 - [ ] S3 Delete Event Handler

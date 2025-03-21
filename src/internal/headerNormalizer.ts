@@ -11,7 +11,11 @@ export const normalizeHeaders = (headers: {
         {} as { [key: string]: string | undefined },
     )
 
-export const headerNormalizer = <T extends APIGatewayProxyEvent>(event: T) => ({
+export const headerNormalizer = <T extends APIGatewayProxyEvent>(
+    event: T,
+): T & {
+    rawHeaders: T['headers']
+} => ({
     ...event,
     headers: normalizeHeaders(event.headers),
     rawHeaders: event.headers,

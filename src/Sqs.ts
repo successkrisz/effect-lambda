@@ -1,10 +1,7 @@
-import {
-    SQSEvent as _SQSEvent,
-    SQSRecord as _SQSRecord,
-    SQSHandler,
-} from 'aws-lambda'
-import { Console, Context, Effect, Either, Layer } from 'effect'
-import { BatchResponse, HandlerContext } from './common'
+import { SQSEvent as _SQSEvent, SQSRecord as _SQSRecord } from 'aws-lambda'
+import { Context, Effect, Either } from 'effect'
+import { BatchResponse } from './common'
+import { makeToHandler } from './makeToHandler'
 
 /**
  * Represents an SQS event in the context of AWS Lambda.
@@ -62,21 +59,7 @@ export const SQSMessageBodies = SQSEvent.pipe(
  * export const handler = processSQSMessages.pipe(toLambdaHandler)
  * ```
  */
-export const toLambdaHandler =
-    (
-        effect: Effect.Effect<
-            void | BatchResponse,
-            never,
-            SQSEvent | HandlerContext
-        >,
-    ): SQSHandler =>
-    async (event, context) =>
-        effect.pipe(
-            Effect.tapDefect(Console.error),
-            Effect.provide(Layer.succeed(SQSEvent, event)),
-            Effect.provide(Layer.succeed(HandlerContext, context)),
-            Effect.runPromise,
-        )
+export const toLambdaHandler = makeToHandler(SQSEvent)<void | BatchResponse>
 
 /**
  * recordProcessorAdapter - adapts a single record processor effect to a batch processor effect
@@ -90,7 +73,7 @@ export const toLambdaHandler =
  * @example
  * ```typescript
  * import { Console, Effect, Either } from 'effect';
- * import { SQSRecord, SQSEventHandler, recordProcessorAdapter } from '@effect-lambda';
+ * import { SQSRecord, toLambdaHandler, recordProcessorAdapter } from '@effect-lambda/Sqs';
  * // Define an effect that processes a single SQS record
  * const processRecord = SQSRecord.pipe(
  *     Effect.tap((record) => Console.log(record.body))
@@ -98,15 +81,15 @@ export const toLambdaHandler =
  *
  * // Adapt the single record processor effect to handle a batch of records and use it with an SQSEventHandler
  * export const handler = processRecord.pipe(
- *    recordProcessorAdapter,
+ *    recordProcessorAdapter<never>, // type parameter is required due to TypeScript limitations
  *    Effect.withConcurrency(1), // optional if want sequential processing
- *    SQSEventHandler,
+ *    toLambdaHandler,
  * );
  * ```
  */
-export const recordProcessorAdapter = <E>(
-    effect: Effect.Effect<void, E, SQSRecord | SQSEvent | HandlerContext>,
-): Effect.Effect<BatchResponse | undefined, never, SQSEvent | HandlerContext> =>
+export const recordProcessorAdapter = <R = SQSRecord>(
+    effect: Effect.Effect<void, any, R>,
+): Effect.Effect<BatchResponse, never, SQSEvent | Exclude<R, SQSRecord>> =>
     Effect.gen(function* () {
         const { Records } = yield* SQSEvent
 

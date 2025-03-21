@@ -1,14 +1,12 @@
 import {
     APIGatewayProxyEvent as _APIGatewayProxyEvent,
-    APIGatewayProxyEventHeaders,
-    APIGatewayProxyHandler,
     APIGatewayProxyResult,
 } from 'aws-lambda'
-import { Context, Effect, Layer, pipe, Schema, SchemaAST } from 'effect'
+import { Context, Effect, Schema, SchemaAST } from 'effect'
 import { HandlerContext } from './common'
 import { headerNormalizer } from './internal/headerNormalizer'
 import { jsonBodyParser } from './internal/jsonBodyParser'
-import { LowercaseKeys } from './utils'
+import { makeToHandler } from './makeToHandler'
 
 /**
  * The API Gateway event with additional fields for raw headers and
@@ -22,13 +20,11 @@ import { LowercaseKeys } from './utils'
  */
 export class APIGatewayProxyEvent extends Context.Tag(
     '@effect-lambda/APIGatewayProxyEvent',
-)<
-    APIGatewayProxyEvent,
-    Omit<_APIGatewayProxyEvent, 'headers'> & {
-        rawHeaders?: APIGatewayProxyEventHeaders
-        headers: LowercaseKeys<APIGatewayProxyEventHeaders>
-    }
->() {}
+)<APIGatewayProxyEvent, _APIGatewayProxyEvent>() {}
+
+export const NormalizedAPIGatewayProxyEvent = APIGatewayProxyEvent.pipe(
+    Effect.map(headerNormalizer),
+)
 
 export const NormalizedHeaders = APIGatewayProxyEvent.pipe(
     Effect.map((event) => event.headers),
@@ -41,7 +37,7 @@ export const schemaBodyJson = <A, I, R extends never>(
     schema: Schema.Schema<A, I, R>,
     options?: SchemaAST.ParseOptions | undefined,
 ) =>
-    APIGatewayProxyEvent.pipe(
+    NormalizedAPIGatewayProxyEvent.pipe(
         Effect.flatMap(jsonBodyParser),
         Effect.map(({ body }) => body as unknown),
         Effect.flatMap((body) =>
@@ -90,10 +86,10 @@ export const PathParameters = APIGatewayProxyEvent.pipe(
  * Utility type can be useful when you are composing with
  * applyMiddleware for example.
  */
-export type HandlerEffect = Effect.Effect<
+export type HandlerEffect<R = never> = Effect.Effect<
     APIGatewayProxyResult,
     never,
-    APIGatewayProxyEvent | HandlerContext
+    APIGatewayProxyEvent | HandlerContext | R
 >
 
 /**
@@ -104,7 +100,7 @@ export type HandlerEffect = Effect.Effect<
  *
  * @example
  * ```typescript
- * import { toLambdaHandler } from './RestApi';
+ * import { toLambdaHandler } from 'effect-lambda/RestApi';
  * import { Effect } from 'effect';
  *
  * const handlerEffect = Effect.succeed({
@@ -115,22 +111,7 @@ export type HandlerEffect = Effect.Effect<
  * export const handler = handlerEffect.pipe(toLambdaHandler);
  * ```
  */
-export const toLambdaHandler =
-    (effect: HandlerEffect): APIGatewayProxyHandler =>
-    async (event, context) =>
-        effect.pipe(
-            Effect.provide(
-                Layer.succeed(
-                    APIGatewayProxyEvent,
-                    pipe(event, headerNormalizer),
-                ),
-            ),
-            Effect.provide(Layer.succeed(HandlerContext, context)),
-            Effect.catchAllDefect(() =>
-                Effect.succeed({
-                    statusCode: 500,
-                    body: JSON.stringify({ message: 'Internal Server Error' }),
-                }),
-            ),
-            Effect.runPromise,
-        )
+
+export const toLambdaHandler = makeToHandler(
+    APIGatewayProxyEvent,
+)<APIGatewayProxyResult>
