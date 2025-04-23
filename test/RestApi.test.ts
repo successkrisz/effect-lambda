@@ -1,6 +1,6 @@
 import { ServerResponse } from 'node:http'
 import { APIGatewayProxyEvent as AwsAPIGatewayProxyEvent } from 'aws-lambda'
-import { Context, Effect, pipe, Schema, Layer } from 'effect'
+import { Context, Effect, pipe, Schema } from 'effect'
 import { applyMiddleware, Middleware } from '../src/applyMiddleware'
 import {
     toLambdaHandler,
@@ -59,7 +59,7 @@ describe('RestApi', () => {
     })
 
     describe('toLambdaHandler', () => {
-        it('should expose event on the context with normalized headers', async () => {
+        it('should expose event on the context with original headers', async () => {
             let evt = {} as Context.Tag.Service<APIGatewayProxyEvent>
 
             const handler = APIGatewayProxyEvent.pipe(
@@ -72,15 +72,10 @@ describe('RestApi', () => {
 
             const body = JSON.stringify({ foo: 'bar' })
             const rawHeaders = { 'Content-Type': 'application/json' }
-            const normalizedHeaders = { 'content-type': 'application/json' }
             const event = createEvent(body, false, rawHeaders)
             await handler(event, {} as any, () => {})
 
-            expect(evt).toEqual({
-                ...event,
-                rawHeaders,
-                headers: normalizedHeaders,
-            })
+            expect(evt).toEqual(event)
         })
 
         it('should return effect result without body', async () => {

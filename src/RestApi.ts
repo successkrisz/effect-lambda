@@ -4,7 +4,7 @@ import {
 } from 'aws-lambda'
 import { Context, Effect, Schema, SchemaAST } from 'effect'
 import { HandlerContext } from './common'
-import { headerNormalizer } from './internal/headerNormalizer'
+import { headerNormalizer, normalizeHeaders } from './internal/headerNormalizer'
 import { jsonBodyParser } from './internal/jsonBodyParser'
 import { makeToHandler } from './makeToHandler'
 
@@ -27,7 +27,7 @@ export const NormalizedAPIGatewayProxyEvent = APIGatewayProxyEvent.pipe(
 )
 
 export const NormalizedHeaders = APIGatewayProxyEvent.pipe(
-    Effect.map((event) => event.headers),
+    Effect.map((event) => normalizeHeaders(event.headers)),
 )
 
 /**
@@ -112,6 +112,14 @@ export type HandlerEffect<R = never> = Effect.Effect<
  * ```
  */
 
-export const toLambdaHandler = makeToHandler(
-    APIGatewayProxyEvent,
-)<APIGatewayProxyResult>
+export const toLambdaHandler = <A extends HandlerEffect>(handler: A) =>
+    makeToHandler(APIGatewayProxyEvent)<APIGatewayProxyResult>(
+        handler.pipe(
+            Effect.catchAllDefect(() =>
+                Effect.succeed({
+                    statusCode: 500,
+                    body: JSON.stringify({ message: 'Internal Server Error' }),
+                }),
+            ),
+        ),
+    )

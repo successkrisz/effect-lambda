@@ -46,6 +46,26 @@ describe('jsonBodyParser', () => {
         expect(result.rawBody).toEqual(JSON.stringify(body))
     })
 
+    it('should parse JSON body if content-type is application/vnd.api+json', async () => {
+        const body = { key: 'value' }
+        const event = createEvent(JSON.stringify(body), false, {
+            'content-type': 'application/vnd.api+json',
+        })
+        const result = await jsonBodyParser(event).pipe(Effect.runPromise)
+        expect(result.body).toEqual(body)
+        expect(result.rawBody).toEqual(JSON.stringify(body))
+    })
+
+    it('should parse JSON body if content-type ends with +json', async () => {
+        const body = { key: 'value' }
+        const event = createEvent(JSON.stringify(body), false, {
+            'content-type': 'application/json+json',
+        })
+        const result = await jsonBodyParser(event).pipe(Effect.runPromise)
+        expect(result.body).toEqual(body)
+        expect(result.rawBody).toEqual(JSON.stringify(body))
+    })
+
     it('should decode base64 encoded JSON body', async () => {
         const body = { key: 'value' }
         const base64Body = Buffer.from(JSON.stringify(body)).toString('base64')
