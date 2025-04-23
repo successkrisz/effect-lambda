@@ -1,4 +1,16 @@
 
+## [0.0.15](https://github.com/successkrisz/effect-lambda/compare/v0.0.14...v0.0.15) (2025-04-23)
+
+
+### Features
+
+* add makeToHandler ([e635785](https://github.com/successkrisz/effect-lambda/commit/e63578511c61cc838f8b81110c3bedf2ee0ed89d))
+
+
+### Bug Fixes
+
+* **RestApi:** parse +json content-type correctly ([3405458](https://github.com/successkrisz/effect-lambda/commit/34054586207fe0a1aedbdcd01cb7663e6682d20b))
+
 ## [0.0.14](https://github.com/successkrisz/effect-lambda/compare/v0.0.13...v0.0.14) (2024-10-23)
 
 
