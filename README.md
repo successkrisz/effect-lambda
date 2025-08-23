@@ -4,7 +4,7 @@
 
 Effect friendly wrapper for AWS Lambda functions.
 
-> **Disclaimer:** This library is still in early development stage and the API is likely to change. Feedback is welcome.
+> **Attention:** This library has been moved to the [successkrisz/effect-packages](https://github.com/successkrisz/effect-packages/tree/master/packages/effect-lambda) monorepo, for the more up to date versions please check there. This repository is now archived.
 
 ## Motivation
 
